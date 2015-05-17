@@ -71,6 +71,8 @@ ifneq (,$(or $(findstring pdp11,$(MAKECMDGOALS)),$(findstring vax,$(MAKECMDGOALS
 else ifneq (,$(findstring besm6,$(MAKECMDGOALS)))
   VIDEO_USEFUL = true
   BESM6_BUILD = true
+else ifneq (,$(findstring ms101,$(MAKECMDGOALS)))
+  VIDEO_USEFUL = true
 else
   ifeq ($(MAKECMDGOALS),)
     # default target is all
@@ -1317,6 +1319,13 @@ PDQ3 = ${PDQ3D}/pdq3_cpu.c ${PDQ3D}/pdq3_sys.c ${PDQ3D}/pdq3_stddev.c \
     ${PDQ3D}/pdq3_mem.c ${PDQ3D}/pdq3_debug.c ${PDQ3D}/pdq3_fdc.c 
 PDQ3_OPT = -I ${PDQ3D} -DUSE_SIM_IMD
 
+MS101D = MicroSistemas
+MS101 = ${MS101D}/ms101_cpu.c \
+	${MS101D}/ms101_kbd.c \
+	${MS101D}/ms101_dsk.c \
+	${MS101D}/ms101_video.c \
+	${MS101D}/ms101_sys.c 
+MS101_OPT = -I ${MS101D} -DUSE_SIM_IMD -DUSE_SIM_VIDEO -lX11 -DMS101
 
 #
 # Build everything (not the unsupported/incomplete simulators)
@@ -1629,6 +1638,13 @@ pdq3 : ${BIN}pdq3${EXE}
 ${BIN}pdq3${EXE} : ${PDQ3} ${SIM}
 	${MKDIRBIN}
 	${CC} ${PDQ3} ${SIM} ${PDQ3_OPT} $(CC_OUTSPEC) ${LDFLAGS}
+
+ms101 : ${BIN}ms101${EXE}
+
+${BIN}ms101${EXE} : ${MS101} ${SIM}
+	${MKDIRBIN}
+	${CC} ${MS101} ${SIM} ${MS101_OPT} $(CC_OUTSPEC) ${LDFLAGS} ${VIDEO_LDFLAGS} ${VIDEO_CCDEFS}
+
 
 # Front Panel API Demo/Test program
 
