@@ -1,1 +1,15 @@
-Hola Manola
+Micro Sistemas MS-101 Simulator
+
+1) compilamos con:
+
+cd simh
+make ms101
+
+2) ejcutamos con:
+
+cd MicroSistemas
+../BIN/ms101
+
+Salute,
+Gus
+
