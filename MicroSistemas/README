@@ -10,6 +10,8 @@ make ms101
 cd MicroSistemas
 ../BIN/ms101
 
+simh> go
+
 Salute,
 Gus
 
