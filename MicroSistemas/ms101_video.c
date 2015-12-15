@@ -212,7 +212,6 @@ if (dptr->flags & DEV_DIS) {
 //if (!initialized)
 if (!vid_active) {
 /* Video Library */
-    int p;
 
     /* Load the MCM6571 char pattern */
     fp6571 = fopen ("6571.bin", "r");
@@ -221,10 +220,10 @@ if (!vid_active) {
         return (SCPE_OPENERR);
     }
 
-    p = 0;
-    for (y = 0; y <  16 * 128; y++) {
-        fread (&data, 1, 1, fp6571);
-        rom_char[p++] = data;
+    int read_glyphs = fread (rom_char, 16, 128, fp6571);
+    if (read_glyphs!=128) {
+        sim_printf ("6571.bin is %d not %d chars\n", read_glyphs, 128);
+        return (SCPE_OPENERR);
     }
 
     fclose (fp6571);
