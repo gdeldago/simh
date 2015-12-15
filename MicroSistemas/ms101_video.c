@@ -163,12 +163,13 @@ for (row = 0; row < 16; row++) {
             mask = 0x80;
             for (x = 0; x < 8; x++) {
                 off = M[p + col + row * 64] & 0x7F;
+                int inv = (M[p + col + row * 64] & 0x80) != 0;
 
                 if (rom_char[off * 16 + ln] & mask) {
-                    vc_lines[(row * 16 + ln) * VC_XSIZE + col * 8 + x] = vid_mono_palette[1];
+                    vc_lines[(row * 16 + ln) * VC_XSIZE + col * 8 + x] = vid_mono_palette[1-inv];
                     }
                 else {
-                    vc_lines[(row * 16 + ln) * VC_XSIZE + col * 8 + x] = vid_mono_palette[0];
+                    vc_lines[(row * 16 + ln) * VC_XSIZE + col * 8 + x] = vid_mono_palette[inv];
                     }
                 mask = (mask >> 1);
 
