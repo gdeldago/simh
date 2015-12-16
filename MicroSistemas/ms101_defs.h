@@ -13,6 +13,7 @@
 #define MEMSIZE         (cpu_unit.capac)                /* actual memory size */
 #define ADDRMASK        (MAXMEMSIZE - 1)                /* address mask */
 #define MEM_ADDR_OK(x)  (((uint32) (x)) < MEMSIZE)
+#define MEM_VIDEO 0x7C00
 
 /* Simulator stop codes */
 

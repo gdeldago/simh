@@ -128,7 +128,7 @@ t_stat video_svc (UNIT *uptr)
 int row, col;
 
 #ifdef MS101
-int p = 0x7C00; // MS101 Base Memory Addr.
+int p = MEM_VIDEO; // MS101 Base Memory Addr.
 #endif
 /*
      MEM
@@ -271,7 +271,7 @@ return (SCPE_OK);
 
 t_stat video_help (FILE *st, DEVICE *dptr, UNIT *uptr, int32 flag, const char *cptr)
 {
-int p = 0x7C00;
+int p = MEM_VIDEO;
 int x, y;
 
 printf ("\n");
