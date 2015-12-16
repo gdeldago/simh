@@ -253,10 +253,8 @@ if (!vid_active) {
     }
     initialized = 1;
     sim_printf ("Video initialized (Video Library)\n");
-
-    sim_activate (&video_unit, video_unit.wait); /* activate */
 }
-
+sim_activate (&video_unit, video_unit.wait); /* activate */
 return (SCPE_OK);
 }
 
