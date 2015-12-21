@@ -162,14 +162,16 @@ for (row = 0; row < 16; row++) {
         for (col = 0; col < 64; col++) {
             mask = 0x80;
             for (x = 0; x < 8; x++) {
-                off = M[p + col + row * 64] & 0x7F;
-                int inv = (M[p + col + row * 64] & 0x80) != 0;
+                off = M[p + col + row * 64];
+                int bit7 = (M[p + col + row * 64] & 0x80) >> 7;
+                if (bit7)
+                    off = (~off)&0xFF; /* bit 7 inverts the char number, not char glyph */
 
                 if (rom_char[off * 16 + ln] & mask) {
-                    vc_lines[(row * 16 + ln) * VC_XSIZE + col * 8 + x] = vid_mono_palette[1-inv];
+                    vc_lines[(row * 16 + ln) * VC_XSIZE + col * 8 + x] = vid_mono_palette[1];
                     }
                 else {
-                    vc_lines[(row * 16 + ln) * VC_XSIZE + col * 8 + x] = vid_mono_palette[inv];
+                    vc_lines[(row * 16 + ln) * VC_XSIZE + col * 8 + x] = vid_mono_palette[0];
                     }
                 mask = (mask >> 1);
 
