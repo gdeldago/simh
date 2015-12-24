@@ -85,9 +85,9 @@ DEVICE kbd_dev = {
 t_stat kbd_svc (UNIT *uptr)
 {
 /*
-    MS-101 Key conversion table [0x0480,0x04FF]
+    MS-101 Key conversion table [0x0480,0x04FF], 7 bits to 8 bits
 */
-const int8 keyboard[] = {
+const uint8 keyboard[] = {
     0x46, 0x45, 0x44, 0x43, 0x42, 0x41, 0x23, 0xB2,
     0xFF, 0xB1, 0xBD, 0x41, 0xFF, 0xB3, 0xFF, 0xB4,
     0xFF, 0xFF, 0x2D, 0xBA, 0xFF, 0x51, 0x2E, 0x2C,
@@ -106,8 +106,17 @@ const int8 keyboard[] = {
     0x2E, 0x24, 0x2C, 0xFF, 0xB5, 0xFF, 0xB0, 0xFF
     };
 
+/* inverse of the previous table, 8 bits to 7 bits */
+static int8 inv_keyboard[UINT8_MAX] = {'\0'};
+
 int i;
 int32 temp;
+
+/* Inverse keyboard table */
+if (inv_keyboard[0xFF] == 0) // once
+    for (i = 0; i < 127; i++) {
+        inv_keyboard[keyboard[i]] = (int8)i;
+        }
 
 //SIM_KEY_EVENT ev;
 sim_activate (&kbd_unit, kbd_unit.wait);          /* continue poll */
@@ -138,13 +147,8 @@ if (toupper(temp) == 127)   /* [BackSpace] Key */
     temp = 128 - 14;
 else if (temp == 27)      /* [Escape] key*/
     temp = 128 - 10;      /* MS101_KBD_RESET */
-else {
-    for (i = 0; i < 127; i++)           /* TODO: build inverse table */
-        if (toupper(temp) == keyboard[i]) {
-            temp = 127 - i;
-            break;
-        }
-    }
+else
+    temp = 127 - inv_keyboard[toupper(temp)];
 
 keybuf[keybuf_len-1] = temp;
 status = keybuf_len;
