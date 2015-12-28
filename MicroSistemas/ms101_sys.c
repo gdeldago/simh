@@ -36,11 +36,11 @@ int32 sim_emax = 4;
 
 DEVICE *sim_devices[] = {
     &cpu_dev,
-	&kbd_dev,
-	&dsk_dev,
-	&video_dev,
+    &kbd_dev,
+    &dsk_dev,
+    &video_dev,
     NULL
-};
+    };
 
 const char *sim_stop_messages[] = {
     "Unknown error",
@@ -48,7 +48,7 @@ const char *sim_stop_messages[] = {
     "HALT instruction",
     "Breakpoint",
     "Invalid Opcode"
-};
+    };
 
 static const char *opcode[] = {
 "NOP", "LXI B", "STAX B", "INX B",                      /* 000-003 */
@@ -115,7 +115,7 @@ static const char *opcode[] = {
 "CP", "PUSH PSW", "ORI", "RST 6",                       /* 364-367 */
 "RM", "SPHL", "JM", "EI",                               /* 370-373 */
 "CM", "???", "CPI", "RST 7",                            /* 374-377 */
- };
+    };
 
 int32 oplen[256] = {
 1,3,1,1,1,1,2,1,0,1,1,1,1,1,2,1,0,3,1,1,1,1,2,1,0,1,1,1,1,1,2,1,
@@ -125,7 +125,8 @@ int32 oplen[256] = {
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,3,3,3,1,2,1,1,1,3,0,3,3,2,1,1,1,3,2,3,1,2,1,1,0,3,2,3,0,2,1,
-1,1,3,1,3,1,2,1,1,1,3,1,3,0,2,1,1,1,3,1,3,1,2,1,1,1,3,1,3,0,2,1 };
+1,1,3,1,3,1,2,1,1,1,3,1,3,0,2,1,1,1,3,1,3,1,2,1,1,1,3,1,3,0,2,1
+    };
 
 /* This is the binary loader.  The input file is considered to be
    a string of literal bytes with no format special format. The
@@ -134,18 +135,17 @@ int32 oplen[256] = {
 
 int32 sim_load (FILE *fileref, char *cptr, char *fnam, int flag)
 {
-    int32 i, addr = 0, cnt = 0;
+int32 i, addr = 0, cnt = 0;
 
-    if ((*cptr != 0) || (flag != 0))
-        return SCPE_ARG;
-    addr = saved_PC;
-    while ((i = getc (fileref)) != EOF)
-    {
-        M[addr] = i;
-        addr++;
-        cnt++;
+if ((*cptr != 0) || (flag != 0))
+    return SCPE_ARG;
+addr = saved_PC;
+while ((i = getc (fileref)) != EOF) {
+    M[addr] = i;
+    addr++;
+    cnt++;
     }
-    return (SCPE_OK);
+return (SCPE_OK);
 }
 
 /* Symbolic output
@@ -161,42 +161,40 @@ int32 sim_load (FILE *fileref, char *cptr, char *fnam, int flag)
 */
 t_stat fprint_sym (FILE *of, t_addr addr, t_value *val, UNIT *uptr, int32 sw)
 {
-	int32 cflag, c1, c2, inst, adr;
-	cflag = (uptr == NULL) || (uptr == &cpu_unit);
-	c1 = (val[0] >> 8) & 0xFF;
-	c2 = val[0] & 0xFF;
+int32 cflag, c1, c2, inst, adr;
+cflag = (uptr == NULL) || (uptr == &cpu_unit);
+c1 = (val[0] >> 8) & 0xFF;
+c2 = val[0] & 0xFF;
 
-	if (sw & SWMASK ('A')) {
-	    fprintf (of, (c2 < 040)? "<%02X>": "%c", c2);
-	    return SCPE_OK;
-	}
-	if (sw & SWMASK ('C')) {
-	    fprintf (of, (c1 < 040)? "<%02X>": "%c", c1);
-	    fprintf (of, (c2 < 040)? "<%02X>": "%c", c2);
-	    return SCPE_OK;
-	}
-	if (!(sw & SWMASK ('M')))
-		return SCPE_ARG;
+if (sw & SWMASK ('A')) {
+    fprintf (of, (c2 < 040)? "<%02X>": "%c", c2);
+    return SCPE_OK;
+    }
+if (sw & SWMASK ('C')) {
+    fprintf (of, (c1 < 040)? "<%02X>": "%c", c1);
+    fprintf (of, (c2 < 040)? "<%02X>": "%c", c2);
+    return SCPE_OK;
+    }
+if (!(sw & SWMASK ('M')))
+    return SCPE_ARG;
 
-	inst = val[0];
-	fprintf (of, "%s", opcode[inst]);
-	if (oplen[inst] == 2)
-	{
-	    if (strchr(opcode[inst], ' ') != NULL)
-		fprintf (of, ",");
-	    else fprintf (of, " ");
-	    fprintf (of, "%X", val[1]);
-	}
-	if (oplen[inst] == 3)
-	{
-	    adr = val[1] & 0xFF;
-	    adr |= (val[2] << 8) & 0xff00;
-	    if (strchr(opcode[inst], ' ') != NULL)
-		fprintf (of, ",");
-	    else fprintf (of, " ");
-	    fprintf (of, "%X", adr);
-	}
-	return -(oplen[inst] - 1);
+inst = val[0];
+fprintf (of, "%s", opcode[inst]);
+if (oplen[inst] == 2) {
+    if (strchr(opcode[inst], ' ') != NULL)
+	fprintf (of, ",");
+    else fprintf (of, " ");
+    fprintf (of, "%X", val[1]);
+    }
+if (oplen[inst] == 3) {
+    adr = val[1] & 0xFF;
+    adr |= (val[2] << 8) & 0xff00;
+    if (strchr(opcode[inst], ' ') != NULL)
+        fprintf (of, ",");
+    else fprintf (of, " ");
+    fprintf (of, "%X", adr);
+    }
+return -(oplen[inst] - 1);
 }
 
 /* Symbolic input
@@ -213,92 +211,88 @@ t_stat fprint_sym (FILE *of, t_addr addr, t_value *val, UNIT *uptr, int32 sw)
 
 t_stat parse_sym (char *cptr, t_addr addr, UNIT *uptr, t_value *val, int32 sw)
 {
-	int32 cflag, i = 0, j, r;
-	char gbuf[CBUFSIZE];
+int32 cflag, i = 0, j, r;
+char gbuf[CBUFSIZE];
 
+cflag = (uptr == NULL) || (uptr == &cpu_unit);
+while (isspace (*cptr))
+    cptr++;                         /* absorb spaces */
+if ((sw & SWMASK ('A')) || ((*cptr == '\'') && cptr++)) {   /* ASCII char? */
+    if (cptr[0] == 0)
+        return SCPE_ARG;                  /* must have 1 char */
 
-	cflag = (uptr == NULL) || (uptr == &cpu_unit);
-	while (isspace (*cptr))
-		cptr++;                         /* absorb spaces */
-	if ((sw & SWMASK ('A')) || ((*cptr == '\'') && cptr++))
-	{ 								/* ASCII char? */
-		if (cptr[0] == 0)
-			return SCPE_ARG;                  /* must have 1 char */
+    val[0] = (uint32) cptr[0];
+    return SCPE_OK;
+    }
 
-		val[0] = (uint32) cptr[0];
-		return SCPE_OK;
-	}
+if ((sw & SWMASK ('C')) || ((*cptr == '"') && cptr++)) {    /* ASCII string? */
+    if (cptr[0] == 0)
+        return SCPE_ARG;                  /* must have 1 char */
+    val[0] = ((uint32) cptr[0] << 8) + (uint32) cptr[1];
+    return SCPE_OK;
+    }
 
-	if ((sw & SWMASK ('C')) || ((*cptr == '"') && cptr++))
-	{ 								/* ASCII string? */
-    		if (cptr[0] == 0)
-			return SCPE_ARG;                  /* must have 1 char */
-    		val[0] = ((uint32) cptr[0] << 8) + (uint32) cptr[1];
-		return SCPE_OK;
-	}
+/* An instruction: get opcode (all characters until null, comma,
+   or numeric (including spaces).
+*/
 
-	/* An instruction: get opcode (all characters until null, comma,
-	   or numeric (including spaces).
-	*/
+while (1)   {
+    if (*cptr == ',' || *cptr == '\0' || isxdigit(*cptr))
+        break;
+    gbuf[i] = toupper(*cptr);
+    cptr++;
+    i++;
+    }
 
-	while (1)
-	{
-	    	if (*cptr == ',' || *cptr == '\0' || isxdigit(*cptr))
-			break;
-		gbuf[i] = toupper(*cptr);
-		cptr++;
-		i++;
-	}
+/* Allow for RST which has numeric as part of opcode */
 
-	/* Allow for RST which has numeric as part of opcode */
+if (toupper(gbuf[0]) == 'R' &&
+    toupper(gbuf[1]) == 'S' &&
+    toupper(gbuf[2]) == 'T') {
+    gbuf[i] = toupper(*cptr);
+    cptr++;
+    i++;
+    }
 
-	if (toupper(gbuf[0]) == 'R' &&
-	    toupper(gbuf[1]) == 'S' &&
-	    toupper(gbuf[2]) == 'T') {
-	    gbuf[i] = toupper(*cptr);
-	    cptr++;
-	    i++;
-	}
+/* Allow for 'MOV' which is only opcode that has comma in it. */
 
-	/* Allow for 'MOV' which is only opcode that has comma in it. */
+if (toupper(gbuf[0]) == 'M' &&
+    toupper(gbuf[1]) == 'O' &&
+    toupper(gbuf[2]) == 'V') {
+    gbuf[i] = toupper(*cptr);
+    cptr++;
+    i++;
+    gbuf[i] = toupper(*cptr);
+    cptr++;
+    i++;
+    }
 
-	if (toupper(gbuf[0]) == 'M' &&
-	    toupper(gbuf[1]) == 'O' &&
-	    toupper(gbuf[2]) == 'V') {
-	    gbuf[i] = toupper(*cptr);
-	    cptr++;
-	    i++;
-	    gbuf[i] = toupper(*cptr);
-	    cptr++;
-	    i++;
-	}
+/* kill trailing spaces if any */
+gbuf[i] = '\0';
+for (j = i - 1; gbuf[j] == ' '; j--) {
+    gbuf[j] = '\0';
+    }
 
-	/* kill trailing spaces if any */
-	gbuf[i] = '\0';
-	for (j = i - 1; gbuf[j] == ' '; j--) {
-	    gbuf[j] = '\0';
-	}
+/* find opcode in table */
+for (j = 0; j < 256; j++) {
+    if (strcmp(gbuf, opcode[j]) == 0)
+    break;
+    }
+if (j > 255)                                            /* not found */
+    return SCPE_ARG;
 
-	/* find opcode in table */
-	for (j = 0; j < 256; j++)
-	{
-	    if (strcmp(gbuf, opcode[j]) == 0)
-		break;
-	}
-	if (j > 255)                                            /* not found */
-		return SCPE_ARG;
-
-	val[0] = j;                                             /* store opcode */
-	if (oplen[j] < 2)                                       /* if 1-byter we are done */
-	    return SCPE_OK;
-	if (*cptr == ',') cptr++;
-	cptr = get_glyph(cptr, gbuf, 0);                        /* get address */
-	sscanf(gbuf, "%x", &r);
-	if (oplen[j] == 2) {
-	    val[1] = r & 0xFF;
-	    return (-1);
-	}
-	val[1] = r & 0xFF;
-	val[2] = (r >> 8) & 0xFF;
-	return (-2);
+val[0] = j;                                             /* store opcode */
+if (oplen[j] < 2)                                       /* if 1-byter we are done */
+    return SCPE_OK;
+if (*cptr == ',')
+    cptr++;
+cptr = get_glyph(cptr, gbuf, 0);                        /* get address */
+sscanf(gbuf, "%x", &r);
+if (oplen[j] == 2) {
+    val[1] = r & 0xFF;
+    return (-1);
+    }
+val[1] = r & 0xFF;
+val[2] = (r >> 8) & 0xFF;
+return (-2);
 }
