@@ -1251,7 +1251,7 @@ int32 nulldev(int32 flag, int32 data)
 
 void sim_special_init (void)
 {
-	load_ROMS();
+    load_ROMS();
 }
 
 void (*sim_vm_init)(void) = &sim_special_init;
@@ -1259,41 +1259,39 @@ void (*sim_vm_init)(void) = &sim_special_init;
 
 int32 load_ROMS ()
 {
-	#ifdef MS101
-	load_ROM ("rom1.bin", 0);
-	load_ROM ("rom2.bin", 0x0400);
+    #ifdef MS101
+    load_ROM ("rom1.bin", 0x0000);
+    load_ROM ("rom2.bin", 0x0400);
 
-	load_ROM ("rom5.bin", 0x1000);
-	load_ROM ("rom6.bin", 0x1400);
-	#endif
-	return (SCPE_OK);
+    load_ROM ("rom5.bin", 0x1000);
+    load_ROM ("rom6.bin", 0x1400);
+    #endif
+    return (SCPE_OK);
 }
 
-int32 load_ROM (char * filename, int32 offset)
+int32 load_ROM (char* filename, int32 offset)
 {
-	FILE * fpROM;
-	int	i;
-	unsigned char data;
+    FILE* fpROM = NULL;
+    size_t read = 0;
+    unsigned char data = '\0';
 
-	fpROM = fopen (filename, "r");
-	if (!fpROM)
-	{
-		sim_printf ("%s NOT FOUND\n", filename);
-		return (SCPE_OPENERR);;
-	}
-	for (i = 0; i < 1024; i++)
-	{
-		fread (&data, 1, 1, fpROM);
-		M[offset + i] = data;
-	}
-	sim_printf ("%d Bytes from %s loaded at %04X\n", i, filename, offset);
-	return (SCPE_OK);
+    fpROM = fopen (filename, "r");
+    if (!fpROM) {
+        sim_printf ("%s NOT FOUND\n", filename);
+        return (SCPE_OPENERR);
+    }
+    read = fread(M+offset, 1, 1024, fpROM);
+    sim_printf ("%d Bytes from %s loaded at %04X\n", read, filename, offset);
+    if (read!=1024) {
+        sim_printf ("ROM %s is not 1 KiB long\n", filename);
+        return (SCPE_OPENERR);
+    }
+
+    return (SCPE_OK);
 }
 
 
 t_stat cpu_help (FILE *st, DEVICE *dptr, UNIT *uptr, int32 flag, const char *cptr)
 {
-	return (SCPE_OK);
+    return (SCPE_OK);
 }
-
-
