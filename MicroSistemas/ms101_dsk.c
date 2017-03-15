@@ -32,11 +32,10 @@ extern unsigned char M[];
 void show_debug_info(void);
 
 /*
+    NEC uPD372D
 
-	NEC µPD372D
-
-	IN RR0
-	OUT WR0
+    IN RR0
+    OUT WR0
 */
 
 /* WRITE REGISTER 0 */
@@ -78,43 +77,43 @@ void show_debug_info(void);
 /*
     Vamos preparando los registros del PD372D y de la Shugart
 */
-static int	WR0, WR1, WR2, WR3, WR4, WR5, WR6;
-static int	RR0, RR1, RR2;
+static int WR0, WR1, WR2, WR3, WR4, WR5, WR6;
+static int RR0, RR1, RR2;
 
 REG dsk_reg[] = {
-	{ HRDATA (WR0, WR0, 8) },
+    { HRDATA (WR0, WR0, 8) },
     { HRDATA (RR0, RR0, 8) },
-	{ NULL }
+    { NULL }
 };
 
 
 DEVICE dsk_dev = {
-	"DSK", 			    /* name */
-	dsk_unit, 		    /* units */
-	dsk_reg, 		    /* registers */
-	NULL,			    /* modifiers */
-	NUM_DISK_UNITS,		/* #units */
-	16, 			    /* address radix */
-	8, 			        /* address width */
-	1, 			        /* addr increment */
-	16, 			    /* data radix */
-	8,			        /* data width */
-    NULL, 			    /* examine routine */
-	NULL, 			    /* deposit routine */
-	&dsk_reset,		    /* reset routine */
-    NULL,   		    /* boot routine */
-	&dsk_attach,		/* attach routine */
-	&dsk_detach,		/* detach routine */
-    NULL, 			    /* context */
-	DEV_DEBUG,		    /* flags */
-	0,			        /* debug control flags */
-    NULL, 			    /* debug flag names */
-	NULL, 			    /* memory size change */
-	NULL, 			    /* logical name */
-	&dsk_help,		    /* help routine */
-	NULL,			    /* attach help routine */
-	NULL,			    /* help context */
-	&dsk_description	/* device description */
+    "DSK",              /* name */
+    dsk_unit,           /* units */
+    dsk_reg,            /* registers */
+    NULL,               /* modifiers */
+    NUM_DISK_UNITS,     /* #units */
+    16,                 /* address radix */
+    8,                  /* address width */
+    1,                  /* addr increment */
+    16,                 /* data radix */
+    8,                  /* data width */
+    NULL,               /* examine routine */
+    NULL,               /* deposit routine */
+    &dsk_reset,         /* reset routine */
+    NULL,               /* boot routine */
+    &dsk_attach,        /* attach routine */
+    &dsk_detach,        /* detach routine */
+    NULL,               /* context */
+    DEV_DEBUG,          /* flags */
+    0,                  /* debug control flags */
+    NULL,               /* debug flag names */
+    NULL,               /* memory size change */
+    NULL,               /* logical name */
+    &dsk_help,          /* help routine */
+    NULL,               /* attach help routine */
+    NULL,               /* help context */
+    &dsk_description    /* device description */
 };
 
 /*  Service routines to handle simlulator functions */
@@ -126,19 +125,19 @@ DEVICE dsk_dev = {
 t_stat dsk_svc (UNIT *uptr)
 {
 
-	//sim_printf ("dsk_svc\n");
+    //sim_printf ("dsk_svc\n");
     //sim_activate (&dsk_unit, dsk_unit.wait);            /* continue poll */
 
-	return (SCPE_OK);
+    return (SCPE_OK);
 }
 
 /* Reset routine */
 t_stat dsk_reset (DEVICE *dptr)
 {
-	t_stat r;
+    t_stat r;
     RR0 = RR0_ALH;	/* Always High */
 
-	return (SCPE_OK);
+    return (SCPE_OK);
 }
 
 /*  I/O instruction handlers, called from the CPU module when an
@@ -151,7 +150,7 @@ t_stat dsk_reset (DEVICE *dptr)
 */
 
 /*
-	NEC µPD372D
+	NEC uPD372D
 
 	Write Register 0
 	Read  Register 0
@@ -159,47 +158,41 @@ t_stat dsk_reset (DEVICE *dptr)
 
 int32 port28(int32 io, int32 data)
 {
-	if (io == 0)
-	{
-		return (RR0);
-	}
+    if (io == 0)
+    {
+        return (RR0);
+    }
     else
     {
-		WR0 = data;	/* R0 bit 6 = 1 (DRIVE READY) */
+        WR0 = data;	/* R0 bit 6 = 1 (DRIVE READY) */
     }
 }
 
 const char *dsk_description (DEVICE *dptr)
 {
-
-	return ("MS101 Floppy Disk (µPD372D)");
+    return ("MS101 Floppy Disk (uPD372D)");
 }
 
 /* Attach routine */
 t_stat dsk_attach(UNIT *uptr, char *cptr)
 {
-   	return (SCPE_OK);
+    return (SCPE_OK);
 }
 
 
 /* Detach routine */
 t_stat dsk_detach(UNIT *uptr)
 {
-   	return (SCPE_OK);
+    return (SCPE_OK);
 }
 
 
 t_stat dsk_help (FILE *st, DEVICE *dptr, UNIT *uptr, int32 flag, const char *cptr)
 {
-
-	return (SCPE_OK);
+    return (SCPE_OK);
 }
 
 t_stat dsk_boot (int32 unit_num, DEVICE *dptr)
 {
-	return (SCPE_OK);
+    return (SCPE_OK);
 }
-
-
-
-
