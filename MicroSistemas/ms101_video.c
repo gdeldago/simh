@@ -12,13 +12,13 @@
 #include "sim_video.h"
 
 
-#define VIDEO_XSIZE      64 * 8                         /* screen size */
-#define VIDEO_YSIZE      16 * 16
+#define VIDEO_XSIZE      (64 * 8)                         /* screen size */
+#define VIDEO_YSIZE      (16 * 16)
 #define VIDEO_MEMSIZE    VIDEO_XSIZE * VIDEO_YSIZE
 
 #define SCREEN_BORDER    8
-#define SCREEN_WIDTH     64 * 8 + SCREEN_BORDER * 2
-#define SCREEN_HEIGHT    16 * 16 + SCREEN_BORDER * 2
+#define SCREEN_WIDTH     (64 * 8 + SCREEN_BORDER * 2)
+#define SCREEN_HEIGHT    (16 * 16 + SCREEN_BORDER * 2)
 #define SCREEN_BPP       32
 
 /* Constants of Video Library */
@@ -319,4 +319,3 @@ sim_printf ("zoom %d\n", zoom);
 
 return (SCPE_OK);
 }
-
